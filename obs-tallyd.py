@@ -39,7 +39,10 @@ def set_up_sources():
     for source in sources:
         handler = obs.obs_source_get_signal_handler(source)
         obs.signal_handler_connect(handler, "activate", source_activated)
-        obs.obs_source_release(source)
+        obs.signal_handler_connect(handler, "deactivate", source_deactivated)
+        obs.signal_handler_connect(handler, "hide", source_hidden)
+        obs.signal_handler_connect(handler, "show", source_shown)
+        #obs.obs_source_release(source)
     obs.source_list_release(sources)
 
 
@@ -52,8 +55,6 @@ def source_tally_changed(handler_name, stuff):
 
     source = obs.calldata_source(stuff, "source")
     print(obs.obs_source_get_name(source))
-
-    return
 
     if handler_name == "activate":
         print("TODO: set live tally")
@@ -72,7 +73,7 @@ def source_tally_changed(handler_name, stuff):
     else:
         print("I don't know what kind of handler is", handler_name)
 
-    obs.obs_source_release(source)
+    #obs.obs_source_release(source)
 
 def source_activated(stuff):
     source_tally_changed("activate", stuff)

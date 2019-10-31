@@ -45,12 +45,43 @@ def set_up_sources():
 
 ### Handlers ###
 
-def source_activated(stuff):
-    print("Source activated handler")
+def source_tally_changed(handler_name, stuff):
+    """Function that only exists to centralize the handler logic."""
+
+    print("Source handler:", handler_name)
+
     source = obs.calldata_source(stuff, "source")
     print(obs.obs_source_get_name(source))
-    #TODO: do stuff
+
+    return
+
+    if handler_name == "activate":
+        print("TODO: set live tally")
+    elif handler_name == "deactivate":
+        if obs.obs_source_showing(source):
+            print("TODO: set preview tally")
+        else:
+            print("TODO: clear tally")
+    elif handler_name == "show":
+        if obs.obs_source_active(source): #should never happen unless handlers fire in a weird order
+            print("TODO: set live tally")
+        else:
+            print("TODO: set preview tally")
+    elif handler_name == "hide":
+        print("TODO: clear tally")
+    else:
+        print("I don't know what kind of handler is", handler_name)
+
     obs.obs_source_release(source)
+
+def source_activated(stuff):
+    source_tally_changed("activate", stuff)
+def source_deactivated(stuff):
+    source_tally_changed("deactivate", stuff)
+def source_hidden(stuff):
+    source_tally_changed("hide", stuff)
+def source_shown(stuff):
+    source_tally_changed("show", stuff)
 
 def apply_pressed(props, prop):
     tallyd_connect()
